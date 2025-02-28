@@ -15,11 +15,11 @@
 # limitations under the License.
 #
 
-kubectl config set-context --current --namespace=thingsboard
+kubectl config set-context --current --namespace=ckan
 
 kubectl delete -f tb-node.yml
-
-for lb in receipts/*-load-balancer.yml; do
-  kubectl delete -f $lb
-done
+#because I don't want to lose the ip
+#for lb in receipts/*-load-balancer.yml; do
+#  kubectl delete -f $lb
+#done
 

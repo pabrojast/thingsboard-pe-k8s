@@ -30,7 +30,7 @@ done
 
 fromVersion="${FROM_VERSION// }"
 
-kubectl config set-context --current --namespace=thingsboard
+kubectl config set-context --current --namespace=ckan
 kubectl apply -f database-setup.yml &&
 kubectl wait --for=condition=Ready pod/tb-db-setup --timeout=120s &&
 kubectl exec tb-db-setup -- sh -c 'export UPGRADE_TB=true; export FROM_VERSION='"$fromVersion"'; start-tb-node.sh; touch /tmp/install-finished;'

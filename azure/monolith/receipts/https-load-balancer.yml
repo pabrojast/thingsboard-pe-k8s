@@ -1,19 +1,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: thingsboard
+  namespace: ckan
   name: tb-http-loadbalancer
   annotations:
     appgw.ingress.kubernetes.io/use-regex: 'true'
     kubernetes.io/ingress.class: azure/application-gateway
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     appgw.ingress.kubernetes.io/request-timeout: "300"
-    appgw.ingress.kubernetes.io/appgw-ssl-certificate: ThingsBoardHTTPCert
-    appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"
+    appgw.ingress.kubernetes.io/override-frontend-port: "8080"
 spec:
+  tls:
+    - hosts:
+      - ihp-wins.unesco.org
+      secretName: echo-tls
   rules:
-    - http:
+    - host: "ihp-wins.unesco.org"
+      http:
         paths:
-          - path: /*
+          - path: "/*"
             pathType: ImplementationSpecific
             backend:
               service:
