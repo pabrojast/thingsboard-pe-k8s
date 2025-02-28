@@ -18,7 +18,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: tb-node
-  namespace: thingsboard
+  namespace: ckan
 spec:
   serviceName: tb-node
   replicas: 1
@@ -154,8 +154,8 @@ spec:
           httpGet:
             path: /login
             port: http
-          initialDelaySeconds: 460
-          timeoutSeconds: 10
+          initialDelaySeconds: 1860
+          timeoutSeconds: 30
       restartPolicy: Always
   volumeClaimTemplates:
     - metadata:
@@ -170,7 +170,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tb-node
-  namespace: thingsboard
+  namespace: ckan
 spec:
   type: ClusterIP
   selector:
@@ -183,7 +183,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tb-web-report
-  namespace: thingsboard
+  namespace: ckan
 spec:
   replicas: 1
   selector:
@@ -236,7 +236,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tb-web-report
-  namespace: thingsboard
+  namespace: ckan
 spec:
   type: ClusterIP
   selector:
