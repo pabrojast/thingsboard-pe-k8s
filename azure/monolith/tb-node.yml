@@ -66,6 +66,13 @@ spec:
       - name: server
         imagePullPolicy: Always
         image: thingsboard/tb-pe-node:3.9.1PE
+        resources:
+            requests:          # garantía mínima
+              cpu:    "1"      # 1 vCPU
+              memory: "3Gi"    # 2 GB RAM
+            limits:            # techo duro
+              cpu:    "4"      # 2 vCPU
+              memory: "8Gi"    # 4 GB RAM
         ports:
           - containerPort: 8080
             name: http
@@ -198,6 +205,13 @@ spec:
         - name: server
           imagePullPolicy: Always
           image: thingsboard/tb-pe-web-report:3.9.1PE
+          resources:
+            requests:          # garantía mínima
+              cpu:    "0.5"      # 1 vCPU
+              memory: "2Gi"    # 2 GB RAM
+            limits:            # techo duro
+              cpu:    "2"      # 2 vCPU
+              memory: "6Gi"    # 4 GB RAM
           ports:
             - containerPort: 8383
               name: http
