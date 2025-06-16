@@ -68,10 +68,10 @@ spec:
         image: thingsboard/tb-pe-node:4.0.2PE
         resources:
           requests:
-            cpu: "1"
+            cpu: "0.5"
             memory: "3Gi"
           limits:
-            cpu: "4"
+            cpu: "2"
             memory: "8Gi"
         ports:
           - containerPort: 8080
