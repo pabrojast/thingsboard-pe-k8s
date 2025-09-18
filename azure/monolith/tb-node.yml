@@ -45,6 +45,14 @@ spec:
         runAsNonRoot: true
         fsGroup: 799
       volumes:
+        - name: tb-mqtts-config
+          secret:
+            secretName: echo-tls
+            items:
+              - key: tls.crt
+                path: server.pem
+              - key: tls.key
+                path: server_key.pem
         - name: tb-node-config
           configMap:
             name: tb-node-config
@@ -82,6 +90,12 @@ spec:
             name: mqtt
           - containerPort: 8883
             name: mqtts
+          - containerPort: 8884
+            name: mqtts2
+          - containerPort: 8885
+            name: mqtts3
+          - containerPort: 8886
+            name: mqtts4
           - containerPort: 5683
             name: coap
             protocol: UDP
@@ -120,16 +134,18 @@ spec:
           - name: COAP_TIMEOUT
             value: "10000"
             # Uncomment the following lines to enable two-way MQTTS
-            #- name: MQTT_SSL_ENABLED
-            #  value: "true"
+          - name: MQTT_SSL_ENABLED
+            value: "true"
             #- name: MQTT_SSL_BIND_ADDRESS
             #  value: "0.0.0.0"
-            #- name: MQTT_SSL_BIND_PORT
-            #  value: "8883"
-            #- name: MQTT_SSL_CREDENTIALS_TYPE
-            #  value: "PEM"
-            #- name: MQTT_SSL_PEM_CERT
-            #  value: "/ssl-config/server.pem"
+          - name: MQTT_SSL_BIND_PORT
+            value: "8883"
+          - name: MQTT_SSL_CREDENTIALS_TYPE
+            value: "PEM"
+          - name: MQTT_SSL_PEM_CERT
+            value: "/ssl-config/server.pem"
+          - name: MQTT_SSL_PEM_KEY
+            value: "/ssl-config/server_key.pem"
           - name: REPORTS_SERVER_ENDPOINT_URL
             value: "http://tb-web-report:8383"
           - name: TB_LICENSE_SECRET
@@ -150,6 +166,9 @@ spec:
           - name: tb-node-data
             mountPath: /data
             readOnly: false
+          - name: tb-mqtts-config
+            mountPath: /ssl-config
+            readOnly: true
           # Uncomment the following lines to enable two-way MQTTS
           #- mountPath: /ssl-config
           #  name: tb-mqtts-config
