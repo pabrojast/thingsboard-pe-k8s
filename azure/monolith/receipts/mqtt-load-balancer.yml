@@ -7,7 +7,7 @@ metadata:
     service.beta.kubernetes.io/azure-load-balancer-internal: "false"
 spec:
   type: LoadBalancer
-  externalTrafficPolicy: Local
+  externalTrafficPolicy: Cluster   # <- cambiado
   selector:
     app: tb-node
   ports:
@@ -17,3 +17,15 @@ spec:
     - port: 8883
       targetPort: 8883
       name: mqtts
+    - port: 8884
+      targetPort: 8883
+      name: mqtts2
+    - port: 8885
+      targetPort: 8883
+      name: mqtts3
+    - port: 8886
+      targetPort: 8883
+      name: mqtts4
+    - name: mqtts5
+      port: 8887
+      targetPort: 8883
