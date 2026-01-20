@@ -148,6 +148,20 @@ spec:
             value: "/ssl-config/server_key.pem"
           - name: REPORTS_SERVER_ENDPOINT_URL
             value: "http://tb-web-report:8383"
+          # CORS Security Configuration - Fix for CORS misconfiguration vulnerability
+          # Only allow requests from trusted origins
+          - name: HTTP_CORS_ENABLED
+            value: "true"
+          - name: HTTP_CORS_ALLOWED_ORIGINS
+            value: "https://ihp-wins.unesco.org,https://tb.ihp-wins.unesco.org"
+          - name: HTTP_CORS_ALLOWED_METHODS
+            value: "GET,POST,PUT,DELETE,OPTIONS"
+          - name: HTTP_CORS_ALLOWED_HEADERS
+            value: "Content-Type,Authorization,X-Requested-With,X-Authorization"
+          - name: HTTP_CORS_ALLOW_CREDENTIALS
+            value: "true"
+          - name: HTTP_CORS_MAX_AGE
+            value: "3600"
           - name: TB_LICENSE_SECRET
             valueFrom:
               secretKeyRef:
