@@ -10,6 +10,14 @@ metadata:
     appgw.ingress.kubernetes.io/request-timeout: "300"
     appgw.ingress.kubernetes.io/backend-path-prefix: "/"
     appgw.ingress.kubernetes.io/override-frontend-port: "8080"
+    # CORS Security Headers - Defense in depth for CORS vulnerability
+    # Note: Primary CORS control is at the application level (tb-node)
+    # These annotations provide additional protection at the ingress layer
+    appgw.ingress.kubernetes.io/response-headers: |
+      Vary: Origin
+      X-Content-Type-Options: nosniff
+      X-Frame-Options: SAMEORIGIN
+      X-XSS-Protection: 1; mode=block
 spec:
   tls:
     - hosts:
