@@ -1,15 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: thingsboard
-  name: tb-http-loadbalancer
+  namespace: ckan
+  name: thingbaord-http-loadbalancer
   annotations:
     appgw.ingress.kubernetes.io/use-regex: 'true'
     kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/request-timeout: "300"
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"
 spec:
   rules:
-    - http:
+    - host: tb.ihp-wins.unesco.org
+      http:
         paths:
           - path: /*
             pathType: ImplementationSpecific

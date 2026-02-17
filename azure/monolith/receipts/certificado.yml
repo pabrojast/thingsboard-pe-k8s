@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mqtt-ihp-wins-tls
+  namespace: ckan
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  secretName: mqtt-ihp-wins-tls
+  dnsNames:
+    - mqtt.ihp-wins.unesco.org
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
