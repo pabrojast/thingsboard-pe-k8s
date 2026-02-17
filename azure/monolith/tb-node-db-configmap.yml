@@ -18,12 +18,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: tb-node-db-config
-  namespace: thingsboard
+  namespace: ckan
   labels:
     name: tb-node-db-config
 data:
   SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
   SPRING_DRIVER_CLASS_NAME: org.postgresql.Driver
-  SPRING_DATASOURCE_URL: jdbc:postgresql://YOUR_AZURE_POSTGRES_ENDPOINT_URL/thingsboard?sslmode=require
-  SPRING_DATASOURCE_USERNAME: YOUR_AZURE_POSTGRES_USER
-  SPRING_DATASOURCE_PASSWORD: YOUR_AZURE_POSTGRES_PASSWORD
+  SPRING_DATASOURCE_URL: jdbc:postgresql://XXXXXXX.postgres.database.azure.com/XXXX?sslmode=require
+  SPRING_DATASOURCE_USERNAME: XXXXXX
+  SPRING_DATASOURCE_PASSWORD: XXXXXX
