@@ -19,7 +19,16 @@ kubectl apply -f tb-namespace.yml || echo
 
 kubectl config set-context --current --namespace=ckan
 
-kubectl apply -f tb-node-db-configmap.yml
+if kubectl get configmap tb-node-db-config >/dev/null 2>&1; then
+  if [ "${FORCE_DB_CONFIG_APPLY}" = "true" ]; then
+    echo "FORCE_DB_CONFIG_APPLY=true. Overwriting tb-node-db-config from tb-node-db-configmap.yml"
+    kubectl apply -f tb-node-db-configmap.yml
+  else
+    echo "ConfigMap tb-node-db-config already exists. Preserving current DB configuration."
+    echo "Set FORCE_DB_CONFIG_APPLY=true to overwrite it from tb-node-db-configmap.yml"
+  fi
+else
+  kubectl apply -f tb-node-db-configmap.yml
+fi
 kubectl apply -f tb-node-configmap.yml
 kubectl apply -f tb-node.yml
-
