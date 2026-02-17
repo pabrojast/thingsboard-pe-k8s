@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mqtt-host-placeholder
+  namespace: ckan
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+spec:
+  rules:
+    - host: mqtt.ihp-wins.unesco.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                # cualquier service HTTP existente en ckan (ej: tb-web-report)
+                name: tb-web-report
+                port:
+                  number: 8383

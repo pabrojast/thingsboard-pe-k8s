@@ -18,7 +18,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: tb-node
-  namespace: thingsboard
+  namespace: ckan
 spec:
   serviceName: tb-node
   replicas: 1
@@ -45,6 +45,14 @@ spec:
         runAsNonRoot: true
         fsGroup: 799
       volumes:
+        - name: tb-mqtts-config
+          secret:
+            secretName: echo-tls
+            items:
+              - key: tls.crt
+                path: server.pem
+              - key: tls.key
+                path: server_key.pem
         - name: tb-node-config
           configMap:
             name: tb-node-config
@@ -66,6 +74,13 @@ spec:
       - name: server
         imagePullPolicy: Always
         image: thingsboard/tb-pe-node:4.2.0PE
+        resources:
+            requests:          # garantía mínima
+              cpu:    "0.5"      # 1 vCPU
+              memory: "3Gi"    # 2 GB RAM
+            limits:            # techo duro
+              cpu:    "2"      # 2 vCPU
+              memory: "8Gi"    # 4 GB RAM
         ports:
           - containerPort: 8080
             name: http
@@ -75,6 +90,12 @@ spec:
             name: mqtt
           - containerPort: 8883
             name: mqtts
+          - containerPort: 8884
+            name: mqtts2
+          - containerPort: 8885
+            name: mqtts3
+          - containerPort: 8886
+            name: mqtts4
           - containerPort: 5683
             name: coap
             protocol: UDP
@@ -113,18 +134,24 @@ spec:
           - name: COAP_TIMEOUT
             value: "10000"
             # Uncomment the following lines to enable two-way MQTTS
-            #- name: MQTT_SSL_ENABLED
-            #  value: "true"
+          - name: MQTT_SSL_ENABLED
+            value: "true"
             #- name: MQTT_SSL_BIND_ADDRESS
             #  value: "0.0.0.0"
-            #- name: MQTT_SSL_BIND_PORT
-            #  value: "8883"
-            #- name: MQTT_SSL_CREDENTIALS_TYPE
-            #  value: "PEM"
-            #- name: MQTT_SSL_PEM_CERT
-            #  value: "/ssl-config/server.pem"
+          - name: MQTT_SSL_BIND_PORT
+            value: "8883"
+          - name: MQTT_SSL_CREDENTIALS_TYPE
+            value: "PEM"
+          - name: MQTT_SSL_PEM_CERT
+            value: "/ssl-config/server.pem"
+          - name: MQTT_SSL_PEM_KEY
+            value: "/ssl-config/server_key.pem"
           - name: REPORTS_SERVER_ENDPOINT_URL
             value: "http://tb-web-report:8383"
+          # CORS Security Configuration - Fix for CORS misconfiguration vulnerability
+          # Use SPRING_APPLICATION_JSON to configure Spring MVC CORS with complex property names
+          - name: SPRING_APPLICATION_JSON
+            value: '{"spring":{"mvc":{"cors":{"mappings":{"[/api/**]":{"allowed-origin-patterns":["https://ihp-wins.unesco.org","https://tb.ihp-wins.unesco.org"],"allowed-methods":["GET","POST","PUT","DELETE","OPTIONS","HEAD"],"allowed-headers":["Content-Type","Authorization","X-Requested-With","X-Authorization","Accept","Origin"],"allow-credentials":true,"max-age":3600}}}}}}'
           - name: TB_LICENSE_SECRET
             valueFrom:
               secretKeyRef:
@@ -143,6 +170,9 @@ spec:
           - name: tb-node-data
             mountPath: /data
             readOnly: false
+          - name: tb-mqtts-config
+            mountPath: /ssl-config
+            readOnly: true
           # Uncomment the following lines to enable two-way MQTTS
           #- mountPath: /ssl-config
           #  name: tb-mqtts-config
@@ -154,8 +184,8 @@ spec:
           httpGet:
             path: /login
             port: http
-          initialDelaySeconds: 460
-          timeoutSeconds: 10
+          initialDelaySeconds: 1860
+          timeoutSeconds: 30
       restartPolicy: Always
   volumeClaimTemplates:
     - metadata:
@@ -170,7 +200,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tb-node
-  namespace: thingsboard
+  namespace: ckan
 spec:
   type: ClusterIP
   selector:
@@ -183,7 +213,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tb-web-report
-  namespace: thingsboard
+  namespace: ckan
 spec:
   replicas: 1
   selector:
@@ -198,6 +228,13 @@ spec:
         - name: server
           imagePullPolicy: Always
           image: thingsboard/tb-pe-web-report:4.2.0PE
+          resources:
+            requests:          # garantía mínima
+              cpu:    "0.5"      # 1 vCPU
+              memory: "2Gi"    # 2 GB RAM
+            limits:            # techo duro
+              cpu:    "2"      # 2 vCPU
+              memory: "6Gi"    # 4 GB RAM
           ports:
             - containerPort: 8383
               name: http
@@ -236,7 +273,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tb-web-report
-  namespace: thingsboard
+  namespace: ckan
 spec:
   type: ClusterIP
   selector:
